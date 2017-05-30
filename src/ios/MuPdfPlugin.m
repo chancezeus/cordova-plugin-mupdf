@@ -1,7 +1,9 @@
-#include "common.h"
-#import "MuDocumentController.h"
 #import "MuPdfPlugin.h"
-#import <Cordova/CDV.h>
+
+#import <mupdf/MuDocRef.h>
+#import "DocumentController.h"
+#include <mupdf/fits.h>
+#include <mupdf/common.h>
 
 @implementation MuPdfPlugin
 {
@@ -20,6 +22,8 @@ enum
 {
     queue = dispatch_queue_create("com.artifex.mupdf.queue", NULL);
 
+    screenScale = [[UIScreen mainScreen] scale];
+
     ctx = fz_new_context(NULL, NULL, ResourceCacheMaxSize);
     fz_register_document_handlers(ctx);
 }
@@ -27,49 +31,40 @@ enum
 - (void)openPdf:(CDVInvokedUrlCommand*)command
 {
   CDVPluginResult* pluginResult = nil;
-  NSString* nspath = [command.arguments objectAtIndex:0];
+  NSString* path = [command.arguments objectAtIndex:0];
   NSString* documentTitle = [command.arguments objectAtIndex:1];
   NSDictionary *options = [command argumentAtIndex:2];
 
   cdvCommand = command;
 
-  if (nspath != nil && [nspath length] > 0) {
-    [self openDocument:nspath title:documentTitle options:options];
+  if (path != nil && [path length] > 0) {
+    [self openDocument:path title:documentTitle options:options];
   } else {
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
   }
 }
 
-- (void) openDocument: (NSString*)nspath title:(NSString*)documentTitle options:(NSDictionary*)options
+- (void) openDocument:(NSString*)path title:(NSString*)documentTitle options:(NSDictionary*)options
 {
-  // _filePath = malloc(strlen([nspath UTF8String])+1);
-  // if (_filePath == NULL) {
-    // printf("Out of memory in openDocument");
-    // return;
-  // }
-
-  // strcpy(_filePath, [nspath UTF8String]);
-
-  // dispatch_sync(queue, ^{});
-
-  // printf("open document '%s'\n", _filePath);
-
-  doc = [[MuDocRef alloc] initWithFilename:nspath];
+  doc = [[MuDocRef alloc] initWithFilename:path];
   if (!doc) {
-    printf("Cannot open document");
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:cdvCommand.callbackId];
     return;
   }
 
-  MuDocumentController *document = [[MuDocumentController alloc] initWithFilename: documentTitle path:nspath document:doc options:options];
+  MuDocumentController *document = [[MuDocumentController alloc] initWithFilename:documentTitle path:path document:doc options:options];
   if (document) {
-    UINavigationController* navigationController = [[UINavigationController alloc] initWithRootViewController:document];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                          selector:@selector(didDismissDocumentController:)
-                                          name:@"DocumentControllerDismissed"
-                                          object:nil];
+    UINavigationController* navigator = [[UINavigationController alloc] initWithRootViewController:document];
+    [[navigator navigationBar] setTranslucent: YES];
+    [[navigator toolbar] setTranslucent: YES];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didDismissDocumentController:) name:@"DocumentControllerDismissed" object:nil];
+
     [self.viewController presentViewController:navigationController animated:YES completion:nil];
   }
+
   free(_filePath);
 }
 
