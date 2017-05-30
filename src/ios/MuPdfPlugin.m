@@ -54,7 +54,7 @@ enum
     return;
   }
 
-  MuDocumentController *document = [[MuDocumentController alloc] initWithFilename:documentTitle path:path document:doc options:options];
+  DocumentController *document = [[DocumentController alloc] initWithFilename:documentTitle path:path document:doc options:options];
   if (document) {
     UINavigationController* navigator = [[UINavigationController alloc] initWithRootViewController:document];
     [[navigator navigationBar] setTranslucent: YES];
