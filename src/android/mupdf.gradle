@@ -19,3 +19,7 @@ android {
         exclude 'META-INF/LICENSE'
     }
 }
+
+ext {
+    cdvBuildMultipleApks = true
+}
