@@ -2,7 +2,7 @@
 
 #import "mupdf/MuPageViewNormal.h"
 #import "mupdf/MuPageViewReflow.h"
-#import "mupdf/DocumentController.h"
+#import "DocumentController.h"
 #import "mupdf/MuTextFieldController.h"
 #import "mupdf/MuChoiceFieldController.h"
 #import "mupdf/MuPrintPageRenderer.h"
