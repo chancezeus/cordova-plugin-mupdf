@@ -398,7 +398,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 
     if (headerTint != nil)
     {
-        NSScanner *scanner = [NSScanner scannerWithString:headerColor];
+        NSScanner *scanner = [NSScanner scannerWithString:headerTint];
         if ([headerColor rangeOfString:@"#"].location == 0)
             [scanner setScanLocation:1];
         [scanner scanHexInt:&rgbaValue];
