@@ -384,10 +384,10 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
             [scanner setScanLocation:1];
         [scanner scanHexInt:&rgbaValue];
 
-        int r = (rgbaValue >> 24) & 0xFF;
-        int g = (rgbaValue >> 16) & 0xFF;
-        int b = (rgbaValue >> 8) & 0xFF;
-        int a = rgbaValue & 0xFF;
+        int r = (rgbaValue >> 16) & 0xFF;
+        int g = (rgbaValue >> 8) & 0xFF;
+        int b = rgbaValue & 0xFF;
+        int a = (rgbaValue >> 24) & 0xFF;
         self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:r / 255.0f
                                                                             green:g / 255.0
                                                                             blue:b / 255.0
