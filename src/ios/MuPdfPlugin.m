@@ -1,9 +1,9 @@
 #import "MuPdfPlugin.h"
 
-#import <mupdf/MuDocRef.h>
+#import "mupdf/MuDocRef.h"
 #import "DocumentController.h"
-#include <mupdf/fits.h>
-#include <mupdf/common.h>
+#include "mupdf/fits.h"
+#include "mupdf/common.h"
 
 @implementation MuPdfPlugin
 {
