@@ -407,10 +407,12 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         int g = (rgbaValue >> 8) & 0xFF;
         int b = rgbaValue & 0xFF;
         int a = (rgbaValue >> 24) & 0xFF;
-        self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:r / 255.0f
-                                                                            green:g / 255.0
-                                                                            blue:b / 255.0
-                                                                            alpha:a / 255.0];
+
+        UIColor *color = [UIColor colorWithRed:r / 255.0f green:g / 255.0 blue:b / 255.0 alpha:a / 255.0];
+
+        self.navigationController.navigationBar.tintColor = color;
+        [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName: color}];
+        self.navigationController.navigationBar.translucent = NO;
     }
 
     // TODO: add activityindicator to search bar
@@ -842,7 +844,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     else
     {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DocumentControllerDismissed" object:nil userInfo:nil];
-        [self.navigationController popViewControllerAnimated:YES];
+        [[[self navigationController] presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
@@ -857,7 +859,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         }
 
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
-        [self.navigationController popViewControllerAnimated:YES];
+        [[[self navigationController] presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     }
 
     if ([ShareAlertMessage isEqualToString:alertView.message])
