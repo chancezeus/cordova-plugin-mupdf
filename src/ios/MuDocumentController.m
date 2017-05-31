@@ -204,6 +204,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 
     BOOL annotationsEnabled;
     BOOL isAnnotatedPdf;
+    BOOL shareEnabled;
     NSString *headerColor;
 }
 
@@ -237,8 +238,9 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         return nil;
 
     annotationsEnabled = [[options valueForKey:@"annotationsEnabled"] boolValue];
+    shareEnabled = [[options valueForKey:@"shareEnabled"] boolValue];
     isAnnotatedPdf = [[options valueForKey:@"isAnnotatedPdf"] boolValue];
-    headerColor = [[options valueForKey:@"headerColor"] stringValue];
+    headerColor = [options objectForKey:@"headerColor"];
 
     return self;
 }
@@ -375,9 +377,22 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 
     [self addMainMenuButtons];
 
-    // TODO: add activityindicator to search bar
+    unsigned int rgbaValue = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    if ( [hexString rangeOfString:@"#"].location == 0 )
+        [scanner setScanLocation:1];
+    [scanner scanHexInt:&rgbaValue];
 
-    // TODO: [self navigationItem] === mainBar?? (headerColor???)
+    int r = (rgbValue >> 24) & 0xFF;
+    int g = (rgbValue >> 16) & 0xFF;
+    int b = (rgbValue >> 8) & 0xFF;
+    int a = rgbValue & 0xFF;
+    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:r / 255.0f
+                                                                        green:g / 255.0
+                                                                        blue:b / 255.0
+                                                                        alpha:a / 255.0];
+
+    // TODO: add activityindicator to search bar
 
     self.view = view;
     [view release];
@@ -594,6 +609,8 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 {
     // NSMutableArray *rightbuttons = [NSMutableArray arrayWithObjects:printButton, shareButton, nil];
     NSMutableArray *rightbuttons = [NSMutableArray arrayWithObjects:printButton, nil];
+    if (shareEnabled)
+        [rightbuttons addObject:shareButton];
     if (annotationsEnabled && annotationsEnabled && docRef->interactive)
         [rightbuttons insertObject:annotButton atIndex:0];
     self.navigationItem.rightBarButtonItems = rightbuttons;
@@ -851,7 +868,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 {
     if ([CloseAlertMessage isEqualToString:alertView.message])
     {
-        if (buttonIndex == 1 && isAnnotated) {
+        if (buttonIndex == 1 && isAnnotatedPdf) {
             saveDoc(_filePath.UTF8String, doc);
         } else {
             saveDocCopy(_filePath.UTF8String, doc);
