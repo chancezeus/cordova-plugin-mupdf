@@ -1,0 +1,40 @@
+{
+  "name": "MuPDF",
+  "version": "1.11",
+  "summary": "A lightweight PDF and XPS viewer.",
+  "cocoapods_version": ">= 0.39",
+  "description": "MuPDF is a small, fast, and yet complete PDF viewer. \nIt supports PDF 1.7 with transparency, encryption, \nhyperlinks, annotations, searching and more. It also\nreads XPS and OpenXPS documents. Licensed under the AGPL.\nCommercial licensing is also available, contact\nsales@artifex.com.",
+  "homepage": "http://www.mupdf.com/",
+  "license": {
+    "type": "Affero GNU GPL v3",
+    "file": "COPYING"
+  },
+  "authors": "Artifex",
+  "source": {
+    "git": "git://git.ghostscript.com/mupdf-ios-viewer.git",
+    "tag": "1.11",
+    "submodules": true
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "requires_arc": false,
+  "module_name": "mupdf",
+  "prepare_command": "sed -i '' 's/make -j4 -C/make -C/g' build_libs.sh && xcodebuild -project MuPDF.xcodeproj -scheme MuPDF -configuration Release -sdk iphoneos CODE_SIGN_IDENTITY=\"\" CODE_SIGNING_REQUIRED=NO && xcodebuild -project MuPDF.xcodeproj -scheme MuPDF -configuration Release -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO CODE_SIGN_IDENTITY=\"\" CODE_SIGNING_REQUIRED=NO && cd libmupdf/build && for i in mupdf mupdfthird; do lipo -create -output lib${i}.a release-ios-i386-x86_64/lib${i}.a release-ios-armv7-arm64/lib${i}.a; done && mv libmupdf.a libmupdfcore.a && cd ../.. && mkdir -p dist/{include/mupdf,src} && cp -R src/*.h common.h libmupdf/include/mupdf/* dist/include/mupdf && cp src/*.m common.m dist/src && cp -f -p libmupdf/build/libmupdf*.a dist && find dist -name '*.[mh]' -exec perl -pi -e 's,#import \"Mu,#import \"mupdf/Mu,' {} + && find dist -name '*.[mh]' -exec perl -pi -e 's,#include \"common.h\",#include \"mupdf/common.h\",' {} + && find dist -name memento.h -exec perl -pi -e 's,#include <memory.h>,#include <stdlib.h>,' {} +",
+  "source_files": [
+    "dist/src/**/*.[m]",
+    "dist/src/common.m",
+    "dist/include/mupdf/**/*.h"
+  ],
+  "resources": [
+    "*.png",
+    "resources/*"
+  ],
+  "public_header_files": "dist/include/mupdf/**/*.h",
+  "header_mappings_dir": "dist/include",
+  "vendored_libraries": "dist/*.a",
+  "pod_target_xcconfig": {
+    "USE_HEADERMAP": "NO",
+    "USER_HEADER_SEARCH_PATHS": "\"${PODS_ROOT}/mupdf/include\""
+  }
+}

@@ -37,6 +37,15 @@ enum
 
   cdvCommand = command;
 
+  NSUrl *url = [NSUrl URLWithString:path];
+  if (url != nil) {
+    if ([url isFileURL]) {
+      path = [url path];
+    } else {
+      path = nil;
+    }
+  }
+
   if (path != nil && [path length] > 0) {
     [self openDocument:path title:documentTitle options:options];
   } else {

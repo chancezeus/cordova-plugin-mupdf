@@ -23,7 +23,7 @@
             </feature>
         </config-file>
 
-        <framework src="MuPDF" type="podspec" spec="~> 1.10"/>
+        <framework src="MuPDF" type="podspec" spec=":podspec => 'https://raw.githubusercontent.com/chancezeus/cordova-plugin-mupdf/master/src/ios/MuPDF.podspec.json'"/>
 
         <source-file src="src/ios/MuPdfPlugin.m"/>
         <header-file src="src/ios/MuPdfPlugin.h"/>
