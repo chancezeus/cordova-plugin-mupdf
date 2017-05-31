@@ -28,6 +28,12 @@
     "*.png",
     "resources/*"
   ],
-  "vendored_libraries": "dist/*.a"
+  "public_header_files": "dist/include/**/*.h",
+  "header_mappings_dir": "dist/include",
+  "vendored_libraries": "dist/*.a",
+  "pod_target_xcconfig": {
+    "USE_HEADERMAP": "NO",
+    "HEADER_SEARCH_PATHS": "\"$(inherited) $(PODS_ROOT)/MuPDF/dist/include\""
+  }
 }
 
