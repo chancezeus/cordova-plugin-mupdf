@@ -30,9 +30,5 @@
   ],
   "public_header_files": "dist/include/mupdf/**/*.h",
   "header_mappings_dir": "dist/include",
-  "vendored_libraries": "dist/*.a",
-  "pod_target_xcconfig": {
-    "USE_HEADERMAP": "NO",
-    "HEADER_SEARCH_PATHS": "$(PODS_ROOT)/MuPDF/include"
-  }
+  "vendored_libraries": "dist/*.a"
 }
