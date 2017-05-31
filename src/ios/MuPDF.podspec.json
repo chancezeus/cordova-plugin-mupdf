@@ -33,8 +33,6 @@
   "vendored_libraries": "dist/*.a",
   "pod_target_xcconfig": {
     "USE_HEADERMAP": "NO",
-    "HEADER_SEARCH_PATHS": [
-      "${PODS_ROOT}/#{s.name}/include"
-    ]
+    "HEADER_SEARCH_PATHS": "$(PODS_ROOT)/MuPDF/include"
   }
 }
