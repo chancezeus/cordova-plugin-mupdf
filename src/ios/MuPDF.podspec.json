@@ -27,6 +27,6 @@
   "resources": [
     "*.png",
     "resources/*"
-  ]
+  ],
   "vendored_libraries": "dist/*.a"
 }
