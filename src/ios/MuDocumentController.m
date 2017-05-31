@@ -1,11 +1,11 @@
-#include "common.h"
+#include "mupdf/common.h"
 
-#import "MuPageViewNormal.h"
-#import "MuPageViewReflow.h"
-#import "MuDocumentController.h"
-#import "MuTextFieldController.h"
-#import "MuChoiceFieldController.h"
-#import "MuPrintPageRenderer.h"
+#import "mupdf/MuPageViewNormal.h"
+#import "mupdf/MuPageViewReflow.h"
+#import "mupdf/MuDocumentController.h"
+#import "mupdf/MuTextFieldController.h"
+#import "mupdf/MuChoiceFieldController.h"
+#import "mupdf/MuPrintPageRenderer.h"
 
 #define GAP 20
 #define INDICATOR_Y -44-24

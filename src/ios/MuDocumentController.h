@@ -6,10 +6,10 @@
 
 #include "mupdf/fitz.h"
 
-#import "MuOutlineController.h"
-#import "MuDocRef.h"
-#import "MuDialogCreator.h"
-#import "MuUpdater.h"
+#import "mupdf/MuOutlineController.h"
+#import "mupdf/MuDocRef.h"
+#import "mupdf/MuDialogCreator.h"
+#import "mupdf/MuUpdater.h"
 
 enum
 {
