@@ -648,7 +648,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     UIActivityViewController *cont = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:nil];
     cont.popoverPresentationController.barButtonItem = shareButton;
     [self presentViewController:cont animated:YES completion:nil];
-    [cont release];
 }
 
 - (void) onShare: (id)sender
@@ -658,7 +657,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:AlertTitle message:ShareAlertMessage delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Save and Share", nil];
         [alertView show];
-        [alertView release];
     }
     else
     {
@@ -821,7 +819,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
             initWithTitle:AlertTitle message:CloseAlertMessage delegate:self
             cancelButtonTitle:@"Discard" otherButtonTitles:@"Save", nil];
         [saveAlert show];
-        [saveAlert release];
     }
     else
     {
@@ -935,7 +932,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
                 cancelButtonTitle: @"Close"
                 otherButtonTitles: nil];
             [alert show];
-            [alert release];
             free(needle);
         });
     });
@@ -1120,7 +1116,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     }
     for (UIView<MuPageView> *view in invisiblePages)
         [view removeFromSuperview];
-    [invisiblePages release]; // don't bother recycling them...
 
     [self createPageView: current];
     [self createPageView: current - 1];
@@ -1148,7 +1143,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         [canvas addSubview: view];
         if (showLinks)
             [view showLinks];
-        [view release];
     }
 }
 
@@ -1196,7 +1190,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     MuTextFieldController *tf = [[MuTextFieldController alloc] initWithText:aString okayAction:block];
     tf.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:tf animated:YES completion:nil];
-    [tf release];
 }
 
 - (void) invokeChoiceDialog:(NSArray *)anArray okayAction:(void (^)(NSArray *))block
@@ -1204,7 +1197,6 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     MuChoiceFieldController *cf = [[MuChoiceFieldController alloc] initWithChoices:anArray okayAction:block];
     cf.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:cf animated:YES completion:nil];
-    [cf release];
 }
 
 - (void) onGotoPageFinished
