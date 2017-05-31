@@ -206,6 +206,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     BOOL isAnnotatedPdf;
     BOOL shareEnabled;
     NSString *headerColor;
+    NSString *headerTint;
 }
 
 - (instancetype) initWithFilename: (NSString*)filename path:(NSString *)cstr document: (MuDocRef *)aDoc
@@ -241,6 +242,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     shareEnabled = [[options valueForKey:@"shareEnabled"] boolValue];
     isAnnotatedPdf = [[options valueForKey:@"isAnnotatedPdf"] boolValue];
     headerColor = [options objectForKey:@"headerColor"];
+    headerTint = [options objectForKey:@"headerTint"];
 
     return self;
 }
@@ -376,9 +378,9 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 
     [self addMainMenuButtons];
 
+    unsigned int rgbaValue = 0;
     if (headerColor != nil)
     {
-        unsigned int rgbaValue = 0;
         NSScanner *scanner = [NSScanner scannerWithString:headerColor];
         if ([headerColor rangeOfString:@"#"].location == 0)
             [scanner setScanLocation:1];
@@ -389,6 +391,23 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         int b = rgbaValue & 0xFF;
         int a = (rgbaValue >> 24) & 0xFF;
         self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:r / 255.0f
+                                                                            green:g / 255.0
+                                                                            blue:b / 255.0
+                                                                            alpha:a / 255.0];
+    }
+
+    if (headerTint != nil)
+    {
+        NSScanner *scanner = [NSScanner scannerWithString:headerColor];
+        if ([headerColor rangeOfString:@"#"].location == 0)
+            [scanner setScanLocation:1];
+        [scanner scanHexInt:&rgbaValue];
+
+        int r = (rgbaValue >> 16) & 0xFF;
+        int g = (rgbaValue >> 8) & 0xFF;
+        int b = rgbaValue & 0xFF;
+        int a = (rgbaValue >> 24) & 0xFF;
+        self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:r / 255.0f
                                                                             green:g / 255.0
                                                                             blue:b / 255.0
                                                                             alpha:a / 255.0];
