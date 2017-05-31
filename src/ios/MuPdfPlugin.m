@@ -1,7 +1,7 @@
 #import "MuPdfPlugin.h"
-
-#import "DocumentController.h"
+#import "MuDocumentController.h"
 #import <mupdf/MuDocRef.h>
+
 #include <mupdf/fitz.h>
 #include <mupdf/common.h>
 
@@ -37,7 +37,7 @@ enum
 
   cdvCommand = command;
 
-  NSUrl *url = [NSUrl URLWithString:path];
+  NSURL *url = [NSURL URLWithString:path];
   if (url != nil) {
     if ([url isFileURL]) {
       path = [url path];
@@ -58,16 +58,16 @@ enum
 {
   doc = [[MuDocRef alloc] initWithFilename:path];
   if (!doc) {
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:cdvCommand.callbackId];
     return;
   }
 
   DocumentController *document = [[DocumentController alloc] initWithFilename:documentTitle path:path document:doc options:options];
   if (document) {
-    UINavigationController* navigator = [[UINavigationController alloc] initWithRootViewController:document];
-    [[navigator navigationBar] setTranslucent: YES];
-    [[navigator toolbar] setTranslucent: YES];
+    UINavigationController* navigationController = [[UINavigationController alloc] initWithRootViewController:document];
+    [[navigationController navigationBar] setTranslucent: YES];
+    [[navigationController toolbar] setTranslucent: YES];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didDismissDocumentController:) name:@"DocumentControllerDismissed" object:nil];
 
