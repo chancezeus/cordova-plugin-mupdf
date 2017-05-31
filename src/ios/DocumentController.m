@@ -2,7 +2,7 @@
 
 #import "mupdf/MuPageViewNormal.h"
 #import "mupdf/MuPageViewReflow.h"
-#import "mupdf/MuDocumentController.h"
+#import "mupdf/DocumentController.h"
 #import "mupdf/MuTextFieldController.h"
 #import "mupdf/MuChoiceFieldController.h"
 #import "mupdf/MuPrintPageRenderer.h"
@@ -169,7 +169,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     return nil;
 }
 
-@implementation MuDocumentController
+@implementation DocumentController
 {
     fz_document *doc;
     MuDocRef *docRef;
@@ -219,7 +219,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         self.automaticallyAdjustsScrollViewInsets = NO;
 #endif
     key = [filename copy];
-    docRef = [aDoc retain];
+    docRef = aDoc;
     doc = docRef->doc;
     _filePath = [cstr copy];
 
@@ -301,13 +301,12 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
     UITapGestureRecognizer *tapRecog = [[UITapGestureRecognizer alloc] initWithTarget: self action: @selector(onTap:)];
     tapRecog.delegate = self;
     [canvas addGestureRecognizer: tapRecog];
-    [tapRecog release];
+
     // In reflow mode, we need to track pinch gestures on the canvas and pass
     // the scale changes to the subviews.
     UIPinchGestureRecognizer *pinchRecog = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(onPinch:)];
     pinchRecog.delegate = self;
     [canvas addGestureRecognizer:pinchRecog];
-    [pinchRecog release];
 
     scale = 1.0;
 
@@ -377,58 +376,27 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 
     [self addMainMenuButtons];
 
-    unsigned int rgbaValue = 0;
-    NSScanner *scanner = [NSScanner scannerWithString:hexString];
-    if ( [hexString rangeOfString:@"#"].location == 0 )
-        [scanner setScanLocation:1];
-    [scanner scanHexInt:&rgbaValue];
+    if (headerColor != nil)
+    {
+        unsigned int rgbaValue = 0;
+        NSScanner *scanner = [NSScanner scannerWithString:headerColor];
+        if ([headerColor rangeOfString:@"#"].location == 0)
+            [scanner setScanLocation:1];
+        [scanner scanHexInt:&rgbaValue];
 
-    int r = (rgbValue >> 24) & 0xFF;
-    int g = (rgbValue >> 16) & 0xFF;
-    int b = (rgbValue >> 8) & 0xFF;
-    int a = rgbValue & 0xFF;
-    self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:r / 255.0f
-                                                                        green:g / 255.0
-                                                                        blue:b / 255.0
-                                                                        alpha:a / 255.0];
+        int r = (rgbaValue >> 24) & 0xFF;
+        int g = (rgbaValue >> 16) & 0xFF;
+        int b = (rgbaValue >> 8) & 0xFF;
+        int a = rgbaValue & 0xFF;
+        self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:r / 255.0f
+                                                                            green:g / 255.0
+                                                                            blue:b / 255.0
+                                                                            alpha:a / 255.0];
+    }
 
     // TODO: add activityindicator to search bar
 
     self.view = view;
-    [view release];
-}
-
-- (void) dealloc
-{
-    [docRef release]; docRef = nil; doc = NULL;
-    [indicator release]; indicator = nil;
-    [slider release]; slider = nil;
-    [sliderWrapper release]; sliderWrapper = nil;
-    [reflowButton release]; reflowButton = nil;
-    [backButton release]; backButton = nil;
-    [moreButton release]; moreButton = nil;
-    [searchBar release]; searchBar = nil;
-    [outlineButton release]; outlineButton = nil;
-    [linkButton release]; linkButton = nil;
-    [searchButton release]; searchButton = nil;
-    [cancelButton release]; cancelButton = nil;
-    [prevButton release]; prevButton = nil;
-    [nextButton release]; nextButton = nil;
-    [shareButton release]; shareButton = nil;
-    [printButton release]; printButton = nil;
-    [annotButton release]; annotButton = nil;
-    [highlightButton release]; highlightButton = nil;
-    [underlineButton release]; underlineButton = nil;
-    [strikeoutButton release]; strikeoutButton = nil;
-    [inkButton release]; inkButton = nil;
-    [tickButton release]; tickButton = nil;
-    [deleteButton release]; deleteButton = nil;
-    [canvas release]; canvas = nil;
-    [_filePath release]; _filePath = NULL;
-
-    [outline release];
-    [key release];
-    [super dealloc];
 }
 
 - (void) viewWillAppear: (BOOL)animated
@@ -567,11 +535,9 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         NSMutableArray *titles = [[NSMutableArray alloc] init];
         NSMutableArray *pages = [[NSMutableArray alloc] init];
         flattenOutline(titles, pages, root, 0);
-        [outline release];
+
         if (titles.count)
             outline = [[MuOutlineController alloc] initWithTarget: self titles: titles pages: pages];
-        [titles release];
-        [pages release];
         fz_drop_outline(ctx, root);
     }
 
@@ -659,7 +625,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
         printInfo.duplex = UIPrintInfoDuplexLongEdge;
         pic.printInfo = printInfo;
         pic.showsPageRange = YES;
-        pic.printPageRenderer = [[[MuPrintPageRenderer alloc] initWithDocRef:docRef] autorelease];
+        pic.printPageRenderer = [[MuPrintPageRenderer alloc] initWithDocRef:docRef];
 
         void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
             ^(UIPrintInteractionController *pic, BOOL completed, NSError *error) {
@@ -678,7 +644,7 @@ static char* saveDocCopy(char *current_path, fz_document *doc)
 
 - (void) shareDocument
 {
-    NSURL *url = [NSURL fileURLWithPath:path];
+    NSURL *url = [NSURL fileURLWithPath:_filePath];
     UIActivityViewController *cont = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:nil];
     cont.popoverPresentationController.barButtonItem = shareButton;
     [self presentViewController:cont animated:YES completion:nil];

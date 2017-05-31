@@ -1,5 +1,5 @@
 #import "MuPdfPlugin.h"
-#import "MuDocumentController.h"
+#import "DocumentController.h"
 #import <mupdf/MuDocRef.h>
 
 #include <mupdf/fitz.h>

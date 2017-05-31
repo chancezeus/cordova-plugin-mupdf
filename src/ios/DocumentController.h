@@ -24,7 +24,7 @@ enum
 	BARMODE_DELETE
 };
 
-@interface MuDocumentController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate, UISearchBarDelegate, MuDialogCreator, MuUpdater>
+@interface DocumentController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate, UISearchBarDelegate, MuDialogCreator, MuUpdater>
 - (instancetype) initWithFilename: (NSString*)nsfilename path:(NSString *)path document:(MuDocRef *)aDoc;
 - (instancetype) initWithFilename:(NSString*)filename path:(NSString *)path document:(MuDocRef *)aDoc options:(NSDictionary*)options;
 - (void) createPageView: (int)number;
