@@ -1,7 +1,8 @@
+function noop() {
+}
+
 module.exports = {
-  openPdf: function(url, title, options, dismissCallback) {
-    cordova.exec(dismissCallback, function(err) {
-      console.log(err);
-    }, "MuPdfPlugin", "openPdf", [url, title, options]);
-  }
+    openPdf: function (url, title, options, dismissCallback, errorCallback) {
+        cordova.exec(dismissCallback || noop, errorCallback || noop, "MuPdfPlugin", "openPdf", [url, title, options]);
+    }
 };
