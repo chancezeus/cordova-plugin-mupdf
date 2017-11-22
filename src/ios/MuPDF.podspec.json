@@ -30,6 +30,10 @@
   ],
   "public_header_files": "dist/include/**/*.h",
   "header_mappings_dir": "dist/include",
-  "vendored_libraries": "dist/*.a"
+  "vendored_libraries": "dist/*.a",
+  "xcconfig": {
+    "HEADER_SEARCH_PATHS": "$(inherited) \"${PODS_ROOT}/MuPDF/dist/include\"",
+    "LIBRARY_SEARCH_PATHS": "$(inherited) \"${PODS_ROOT}/MuPDF/dist\""
+  }
 }
 
